@@ -1,0 +1,40 @@
+body{
+    background-color: black;
+    color: white;
+    text-align: center;
+    font-family: Helvetica "ヒラギノ角ゴ";
+}
+header{
+    height: 200px;
+}
+main{
+    display: grid;
+    grid-template-columns: 33% 34% 33%;
+    padding: 10px;
+}
+div{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+p{
+    background-color: #1F1F1F;
+    width: 200px;
+    margin: 10px;
+    border-radius: 15px;
+}
+.center > p{
+    width: auto;
+}
+.side > p{
+    font-size: 20px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+#word-display{
+    font-size: 60px;
+    padding: 5px 50px;
+}
+#search-result{
+    font-size: 25px;
+}

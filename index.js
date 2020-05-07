@@ -13,7 +13,8 @@ wordBox.addEventListener('keydown', event => {
 
 const getDocument = async(word) => {
     const url = `https://ejje.weblio.jp/content/${encodeURIComponent(word)}`;
-    const meaning = fetch(url, {mode: 'cors'}).then(response => response.text())
+    const meaning = fetch(url, {mode: 'cors'})
+        .then(response => response.text())
         .then(text => new DOMParser().parseFromString(text,'text/html'))
         .then(document => {
             // return document.getElementsByName('twitter:description');

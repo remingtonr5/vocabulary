@@ -12,7 +12,6 @@ files.forEach((name, ind)=> {
     div.appendChild(textarea);
 
     image.setAttribute('src', `${imageDir}/${name}`);
-    image.setAttribute('width', '200px');
     image.setAttribute('height', '480px');
     textarea.setAttribute('id', `meanings-${ind}`);
     // textarea.setAttribute('width', '130px');
@@ -63,23 +62,32 @@ document.getElementById('add').addEventListener('click', () => {
     });
     const filtWords = words.filter(value => value !== '');
     const objWords = filtWords.map(value => {
-        return {
-            'word': value,
-            'level': 99,
-            'meaning': null,
-            'score': 0
-        };
+        if(value.includes('=')){
+            const wordAndMeaning = value.split('=');
+            return {
+                'word': wordAndMeaning[0],
+                'level': 99,
+                'meaning': wordAndMeaning[1],
+                'score': 0
+            };
+        }else{
+            return {
+                'word': value,
+                'level': 99,
+                'meaning': null,
+                'score': 0
+            };
+        }
     });
-    console.log(objWords);
-    writeJSON('words/words.json', objWords);
+    const presentJSON = JSON.parse(fs.readFileSync('words/words.json').toString());
+    const newJSON = presentJSON.concat(objWords);
+    writeJSON(newJSON);
 });
 
 
-const writeJSON = (path,addWords) => {
-    const present = JSON.parse(fs.readFileSync(path).toString());
-    console.log(present);
-    console.log(addWords);
-    console.log(JSON.stringify(present.concat(addWords)));
-    const result = JSON.stringify(present.concat(addWords));
-    fs.writeFileSync(path, result);
+const writeJSON = (newjson) => {
+    const result = JSON.stringify(newjson);
+    fs.writeFileSync('words/words.json', result);
 };
+
+module.exports = writeJSON();
