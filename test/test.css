@@ -1,13 +1,13 @@
 body{
     background-color: black;
     color: white;
-    text-align: center;
     font-family: Helvetica "ヒラギノ角ゴ";
 }
 header{
     height: 200px;
 }
 main{
+    text-align: center;
     display: grid;
     grid-template-columns: 33% 34% 33%;
     padding: 10px;
@@ -18,7 +18,7 @@ div{
     flex-direction: column;
 }
 p{
-    background-color: #1F1F1F;
+    background-color:#1F1F1F;
     width: 200px;
     margin: 10px;
     border-radius: 15px;

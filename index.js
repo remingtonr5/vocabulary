@@ -19,7 +19,6 @@ const getDocument = async(word) => {
         .then(document => {
             // return document.getElementsByName('twitter:description');
             console.log(document.getElementsByName('twitter:description')[0].content);
-
         });
     console.log(meaning);
 };

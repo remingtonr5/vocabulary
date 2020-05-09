@@ -2,7 +2,6 @@ const fs = require('fs');
 
 const allwords = JSON.parse(fs.readFileSync('words/words.json').toString());
 const len = allwords.length;
-const done = [];
 let presentWord;
 let isChanged;
 
@@ -27,31 +26,34 @@ document.body.addEventListener('keydown',event => {
     if(event.key === 'ArrowUp') displayMeaning();
 });
 
+document.getElementById('save').addEventListener('click',save());
+
 const left = () => {
     searchResult.textContent = '';
     const newP = document.createElement('p');
-    const word = wordform.textContent;
-    newP.textContent = word;
+    const previousWord = presentWord.word;
+    presentWord.score++;
+    newP.textContent = previousWord;
     document.getElementById('left').prepend(newP);
 };
 
 const right = () => {
     searchResult.textContent = '';
     const newP = document.createElement('p');
-    const word = wordform.textContent;
-    newP.textContent = word;
+    const previousWord = presentWord.word;
+    presentWord.score++;
+    newP.textContent = previousWord;
     document.getElementById('right').prepend(newP);
 };
 
 const next = () => {
-    done.length = done.length === len ? 0: done.length;
-    presentWord = allwords[Math.floor(len * Math.random())];
-    const word = presentWord.word;
-    if(done.includes(word)){
-        next();
+    const newWord = allwords[Math.floor(len * Math.random())];
+    const score = newWord.score;
+    if(Math.random() < 1/(score+1) ){
+        presentWord = newWord;
+        wordform.textContent = newWord.word;
     }else{
-        wordform.textContent = word;
-        done.push(word);
+        next();
     }
 };
 
@@ -80,8 +82,7 @@ const displayMeaning = async() => {
     }
 };
 
-const overwriteJSON = () => {
-    console.log('hello');
+const save = () => {
     if(isChanged){
         const result = JSON.stringify(allwords);
         fs.writeFile('words/words.json', result);
@@ -92,6 +93,3 @@ const overwriteJSON = () => {
 
 
 window.onload = next();
-
-//window閉じたときに書き込もうと思ってたけど安定しないしコンソール見えないから都度更新する方がいいわ
-window.onclose = overwriteJSON();

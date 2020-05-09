@@ -7,12 +7,6 @@
         body{
             background-color: black;
         }
-        #images{
-            margin: 0px;
-            padding: 0px;
-            display: flex;
-            flex-wrap: wrap;
-        }
         textarea{
             display: block;
             font: 20px Verdana, Helvetica, Arial, sans-serif;
@@ -22,6 +16,21 @@
         div{
             display: flex;
             margin: 5px 10px;
+        }
+        #images{
+            margin: 0px;
+            padding: 0px;
+            display: flex;
+            flex-wrap: wrap;
+        }
+        #images > div{
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+        button{
+            margin-left: auto;
+            margin-right: 10px;
         }
     </style>
   </head>
