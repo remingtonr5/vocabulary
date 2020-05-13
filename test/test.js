@@ -3,7 +3,6 @@ const fs = require('fs');
 const allwords = JSON.parse(fs.readFileSync('words/words.json').toString());
 const len = allwords.length;
 let presentWord;
-let isChanged;
 
 const wordform = document.getElementById('word-display');
 const searchResult = document.getElementById('search-result');
@@ -26,8 +25,6 @@ document.body.addEventListener('keydown',event => {
     if(event.key === 'ArrowUp') displayMeaning();
 });
 
-document.getElementById('save').addEventListener('click',save());
-
 const left = () => {
     searchResult.textContent = '';
     const newP = document.createElement('p');
@@ -41,7 +38,7 @@ const right = () => {
     searchResult.textContent = '';
     const newP = document.createElement('p');
     const previousWord = presentWord.word;
-    presentWord.score++;
+    presentWord.score--;
     newP.textContent = previousWord;
     document.getElementById('right').prepend(newP);
 };
@@ -58,38 +55,54 @@ const next = () => {
 };
 
 const search = async() => {
-    const word = wordform.textContent;
+    const word = presentWord.word;
     const url = `https://ejje.weblio.jp/content/${encodeURIComponent(word)}`;
     return fetch(url, {mode: 'cors'})
         .then(response => response.text())
         .then(text => new DOMParser().parseFromString(text,'text/html'))
         .then(document => {
             // return document.getElementsByName('twitter:description');
-            const result = document.getElementsByName('twitter:description')[0].content;
-            searchResult.textContent = result.slice(word.length+2);
+            const meaning = document.getElementsByName('twitter:description')[0].content;
+            if(meaning === '1152万語収録！weblio辞書で英語学習'){
+                return null;
+            }else{
+                let level;
+                try{
+                    level = document.getElementsByClassName('learning-level-content')[0].textContent;
+                }catch(err){
+                    level = undefined;
+                }
+                return [meaning.slice(word.length+2),level];
+            }
         });
 };
 
 const displayMeaning = async() => {
-    if(presentWord.meaning){
-        searchResult.textContent = presentWord.meaning;
-        return;
+    if(presentWord.meaning && presentWord.level === 99){
+        const result = await search();
+        presentWord.level = result[1];
+        searchResult.textContent = `${presentWord.meaning},level:${presentWord.level}`;
+    }else if(presentWord.meaning){
+        searchResult.textContent = `${presentWord.meaning},level:${presentWord.level}`;
     }else{
-        await search();
-        presentWord.meaning = searchResult.textContent;
-        isChanged = true;
-        return;
+        const result = await search();
+        if(result){
+            searchResult.textContent = `${result[0]},level:${result[1]}`;
+            presentWord.meaning = result[0];
+            presentWord.level = result[1];
+        }else{
+            searchResult.textContent = '検索に失敗しました';
+        }
     }
 };
 
 const save = () => {
-    if(isChanged){
-        const result = JSON.stringify(allwords);
-        fs.writeFile('words/words.json', result);
-    }else{
-        return;
-    }
+    console.log('保存します');
+    const result = JSON.stringify(allwords);
+    fs.writeFileSync('words/words.json', result.replace(/},/g,'},\n').replace(/\[/g,'[\n').replace(/\]/g,'\n]')  );
+    console.log('保存完了');
 };
 
+document.getElementById('save').addEventListener('click',save);
 
 window.onload = next();

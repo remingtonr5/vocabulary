@@ -49,7 +49,7 @@ const filter = (string) => {
             array.splice(i,1);
             continue;
         }
-        const result = array[i].toLowerCase().replace(/\s+/g,'_').replace(/[^a-z_]/g,'');
+        const result = array[i].toLowerCase().replace('1','l').replace(/\s+/g,'_').replace(/[^a-z_]/g,'');
         array[i] = result;
     }
     return array.join('\n');
@@ -75,6 +75,7 @@ const detect = async() => {
 
 
 const tmpSave = (ind) => {
+    console.log(`tmpSave:${ind}`);
     const words = [];
     const textarea = document.getElementById(`meanings-${ind}`);
     words.push.apply(words, textarea.value.split('\n'));
@@ -84,6 +85,7 @@ const tmpSave = (ind) => {
         filtWords.map(value => {
             if(value.includes('=')){
                 const wordAndMeaning = value.split('=');
+                console.log(`成功:${wordAndMeaning[0]}(${wordAndMeaning[1]})`);
                 return {
                     'word': wordAndMeaning[0],
                     'level': 99,
@@ -91,6 +93,7 @@ const tmpSave = (ind) => {
                     'score': 0
                 };
             }else{
+                console.log(`成功:${value}`);
                 return {
                     'word': value,
                     'level': 99,
