@@ -49,7 +49,7 @@ const filter = (string) => {
             array.splice(i,1);
             continue;
         }
-        const result = array[i].toLowerCase().replace('1','l').replace(/\s+/g,'_').replace(/[^a-z_]/g,'');
+        const result = array[i].toLowerCase().replace('1','l').replace(/[^a-z_]/g,'');
         array[i] = result;
     }
     return array.join('\n');
@@ -120,5 +120,5 @@ document.getElementById('add').addEventListener('click', () => {
 
 const writeJSON = (newjson) => {
     const result = JSON.stringify(newjson);
-    fs.writeFileSync('words/words.json', result);
+    fs.writeFileSync('words/words.json', result.replace('[','[\n').replace(']','\n]').replace(/},/g,'},\n'));
 };

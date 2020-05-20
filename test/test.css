@@ -17,7 +17,7 @@ div{
     align-items: center;
     flex-direction: column;
 }
-p{
+main p{
     background-color:#1F1F1F;
     width: 200px;
     margin: 10px;

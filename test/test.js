@@ -6,6 +6,7 @@ let presentWord;
 
 const wordform = document.getElementById('word-display');
 const searchResult = document.getElementById('search-result');
+const count = document.getElementById('count');
 
 document.body.addEventListener('keydown',event => {
     if(event.key === 'ArrowLeft'){
@@ -38,7 +39,6 @@ const right = () => {
     searchResult.textContent = '';
     const newP = document.createElement('p');
     const previousWord = presentWord.word;
-    presentWord.score--;
     newP.textContent = previousWord;
     document.getElementById('right').prepend(newP);
 };
@@ -49,13 +49,14 @@ const next = () => {
     if(Math.random() < 1/(score+1) ){
         presentWord = newWord;
         wordform.textContent = newWord.word;
+        count.textContent++;
     }else{
         next();
     }
 };
 
 const search = async() => {
-    const word = presentWord.word;
+    const word = presentWord.word.replace(/ /g ,'+');
     const url = `https://ejje.weblio.jp/content/${encodeURIComponent(word)}`;
     return fetch(url, {mode: 'cors'})
         .then(response => response.text())
@@ -63,7 +64,7 @@ const search = async() => {
         .then(document => {
             // return document.getElementsByName('twitter:description');
             const meaning = document.getElementsByName('twitter:description')[0].content;
-            if(meaning === '1152万語収録！weblio辞書で英語学習'){
+            if(meaning.includes('weblio')){
                 return null;
             }else{
                 let level;
@@ -80,7 +81,11 @@ const search = async() => {
 const displayMeaning = async() => {
     if(presentWord.meaning && presentWord.level === 99){
         const result = await search();
-        presentWord.level = result[1];
+        try{
+            presentWord.level = result[1];
+        }catch(err){
+            console.log('検索に失敗しました');
+        }
         searchResult.textContent = `${presentWord.meaning},level:${presentWord.level}`;
     }else if(presentWord.meaning){
         searchResult.textContent = `${presentWord.meaning},level:${presentWord.level}`;
